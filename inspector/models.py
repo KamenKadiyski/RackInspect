@@ -14,12 +14,16 @@ class Component(models.Model):
     description = models.CharField(max_length=200)
 
 class InspectionRecord(models.Model):
-    # Добавен е on_delete
+    class RiskLevel(models.TextChoices):
+        GREEN = 'GREEN', 'Зелен (Low rick / Monitor)'
+        AMBER = 'AMBER', 'Amber (Serious Defect / Repair within 4 weeks)'
+        RED = 'RED', 'Red (Critical Defect / Immediate Unloading)'
     location = models.ForeignKey(to=Location, on_delete=models.CASCADE)
-    # Добавени са скоби ()
     position = models.PositiveSmallIntegerField()
     level = models.CharField(max_length=2)
     component = models.ForeignKey(to=Component, on_delete=models.CASCADE)
+    risk_level = models.CharField(max_length=30, choices=RiskLevel.choices, default=RiskLevel.GREEN)
+
     is_fixed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
